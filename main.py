@@ -36,6 +36,12 @@ class Example(QWidget):
         self.post_index.move(370, 45)
         self.post_index.resize(120, 25)
 
+        self.cleat_btn = QPushButton("Очистить", self)
+        self.cleat_btn.move(520, 10)
+        self.cleat_btn.resize(70, 25)
+        self.cleat_btn.clicked.connect(self.clear)
+
+
         self.pixmap = QPixmap(Globals.map_file)
         self.image = QLabel(self)
         self.image.move(0, 180)
@@ -46,8 +52,18 @@ class Example(QWidget):
         text = ''
         text += self.search_map.text().lower()
         Globals.longitude, Globals.latitude = geocoder_response(text)[0]
+        Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
         adress = geocoder_response(text)[1]
+
         self.adress_map.setText(adress)
+        getImage()
+        self.pixmap = QPixmap(Globals.map_file)
+        self.image.setPixmap(self.pixmap)
+
+    def clear(self):
+        self.adress_map.setText("")
+        self.search_map.setText("")
+        Globals.params = {'l': 'map'}
 
         getImage()
         self.pixmap = QPixmap(Globals.map_file)
