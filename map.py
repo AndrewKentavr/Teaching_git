@@ -29,7 +29,6 @@ def geocoder_response(text):
     try:
         assert response
         json_response = response.json()
-        print(json_response)
         try:
             cat_big = []
             root = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
@@ -37,10 +36,11 @@ def geocoder_response(text):
             cat_big.append(cat)
             cat = root["metaDataProperty"]["GeocoderMetaData"]["AddressDetails"]["Country"]["AddressLine"]
             cat_big.append(cat)
-            tola = root["metaDataProperty"]["GeocoderMetaData"]["AddressDetails"]["Country"]["AdministrativeArea"]
-            tola_2 = tola['Locality']['Thoroughfare']['Premise']['PostalCode']['PostalCodeNumber']
-            # вольная улица, дом 3
-            print(tola_2)
+            like_adress = root["metaDataProperty"]["GeocoderMetaData"]["Address"]
+            if "postal_code" in like_adress:
+                cat_big.append(like_adress["postal_code"])
+            else:
+                cat_big.append('НЕТУ СВОЕГО ПОЧТОВОГО ИНДЕКСА')
             return cat_big
         except IndexError:
             pass

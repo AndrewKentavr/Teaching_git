@@ -5,3 +5,4 @@ class Globals:
     params = {'l': 'map'}
     search_text = ''
     map_file = ''
+    adress = ''
