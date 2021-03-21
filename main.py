@@ -1,6 +1,7 @@
 import os
 import sys
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton
 
@@ -67,6 +68,21 @@ class Example(QWidget):
         self.pixmap = QPixmap(Globals.map_file)
         self.image.setPixmap(self.pixmap)
 
+    def search_2(self, text):
+        if text == '':
+            return
+        check_geocoder = geocoder_response(text)
+        if check_geocoder == "IndexError":
+            return
+        Globals.longitude, Globals.latitude = check_geocoder[0]
+        Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
+        Globals.adress = geocoder_response(text)[1]
+
+        self.adress_map.setText(Globals.adress)
+        getImage()
+        self.pixmap = QPixmap(Globals.map_file)
+        self.image.setPixmap(self.pixmap)
+
     def clear(self):
         self.adress_map.setText("")
         self.search_map.setText("")
@@ -85,6 +101,37 @@ class Example(QWidget):
 
     def closeEvent(self, event):
         os.remove(Globals.map_file)
+
+    def mousePressEvent(self, event):
+        if (event.button() == Qt.LeftButton):
+            x = event.x()
+            y = event.y()
+            if y > 180:
+                ll = str(Globals.longitude).split('.')
+                la = str(Globals.latitude).split('.')
+                const_x = 5.5
+                const_y = 2.65
+
+                if x < 300:
+                    n = (300 - int(x)) * const_x
+                    long = int(int(ll[1]) - n)
+                else:
+                    n = (int(x) - 300) * const_x
+                    long = int(int(ll[1]) + n)
+
+                if y < 400:
+                    n = (int(y) - 400) * const_y
+                    lat = int(int(la[1]) - n)
+                else:
+                    n = (400 - int(y)) * const_y
+                    lat = int(int(la[1]) + n)
+
+                longitude = ll[0] + '.' + str(long)
+                latitude = la[0] + '.' + str(lat)
+
+                print(latitude + ' ' + longitude)
+                cat = longitude + ' ' + latitude
+                self.search_2(cat)
 
 
 if __name__ == '__main__':
