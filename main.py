@@ -76,7 +76,7 @@ class Example(QWidget):
             return
         Globals.longitude, Globals.latitude = check_geocoder[0]
         Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
-        Globals.adress = geocoder_response(text)[1]
+        Globals.adress = check_geocoder[1]
 
         self.adress_map.setText(Globals.adress)
         getImage()
