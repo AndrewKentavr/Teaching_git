@@ -43,6 +43,6 @@ def geocoder_response(text):
                 cat_big.append('НЕТУ СВОЕГО ПОЧТОВОГО ИНДЕКСА')
             return cat_big
         except IndexError:
-            pass
+            return "IndexError"
     except AssertionError:
         pass

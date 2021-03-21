@@ -22,15 +22,17 @@ class Example(QWidget):
         self.search_map = QLineEdit(self)
         self.search_map.move(0, 10)
         self.search_map.resize(350, 25)
+        self.search_map.textChanged[str].connect(self.search)
+
 
         self.adress_map = QLineEdit(self)
         self.adress_map.move(0, 45)
         self.adress_map.resize(350, 25)
 
-        self.search_btn = QPushButton("Искать", self)
-        self.search_btn.move(370, 10)
-        self.search_btn.resize(120, 25)
-        self.search_btn.clicked.connect(self.search)
+        # self.search_btn = QPushButton("Искать", self)
+        # self.search_btn.move(370, 10)
+        # self.search_btn.resize(120, 25)
+        # self.search_btn.clicked.connect(self.search)
 
         self.post_index = QPushButton("Почтовый индекс", self)
         self.post_index.move(370, 45)
@@ -51,7 +53,12 @@ class Example(QWidget):
     def search(self):
         text = ''
         text += self.search_map.text().lower()
-        Globals.longitude, Globals.latitude = geocoder_response(text)[0]
+        if text == '':
+            return
+        check_geocoder = geocoder_response(text)
+        if check_geocoder == "IndexError":
+            return
+        Globals.longitude, Globals.latitude = check_geocoder[0]
         Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
         Globals.adress = geocoder_response(text)[1]
 
