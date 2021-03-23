@@ -25,7 +25,6 @@ class Example(QWidget):
         self.search_map.resize(350, 25)
         self.search_map.textChanged[str].connect(self.search)
 
-
         self.adress_map = QLineEdit(self)
         self.adress_map.move(0, 45)
         self.adress_map.resize(350, 25)
@@ -61,7 +60,8 @@ class Example(QWidget):
             return
         Globals.longitude, Globals.latitude = check_geocoder[0]
         Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
-        Globals.adress = geocoder_response(text)[1]
+        Globals.adress = check_geocoder[1]
+        Globals.post = check_geocoder[2]
 
         self.adress_map.setText(Globals.adress)
         getImage()
@@ -71,12 +71,13 @@ class Example(QWidget):
     def search_2(self, text):
         if text == '':
             return
-        check_geocoder = geocoder_response(text)
+        check_geocoder = photo_response(text)
         if check_geocoder == "IndexError":
             return
         Globals.longitude, Globals.latitude = check_geocoder[0]
         Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
         Globals.adress = check_geocoder[1]
+        Globals.post = check_geocoder[2]
 
         self.adress_map.setText(Globals.adress)
         getImage()
@@ -95,7 +96,7 @@ class Example(QWidget):
     def post_index_func(self):
         text = ''
         text += self.search_map.text().lower()
-        postal_code = geocoder_response(text)[2]
+        postal_code = Globals.post
         Globals.adress += ' || ' + postal_code
         self.adress_map.setText(Globals.adress)
 
@@ -129,7 +130,6 @@ class Example(QWidget):
                 longitude = ll[0] + '.' + str(long)
                 latitude = la[0] + '.' + str(lat)
 
-                print(latitude + ' ' + longitude)
                 cat = longitude + ' ' + latitude
                 self.search_2(cat)
 

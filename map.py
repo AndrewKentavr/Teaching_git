@@ -46,3 +46,44 @@ def geocoder_response(text):
             return "IndexError"
     except AssertionError:
         pass
+
+
+def photo_response(text):
+    string = text.split()
+    lon = str(string[0])
+    lat = str(string[1])
+
+    req = 'https://geocode-maps.yandex.ru/1.x/'
+    photo_response = {'apikey': '40d1649f-0493-4b70-98ba-98533de7710b',
+                      "geocode": ",".join([lon, lat]),
+                      'format': 'json'}
+    response = requests.get(req, params=photo_response)
+    try:
+        assert response
+        json_response = response.json()
+        try:
+            cat_big = []
+            root = json_response["response"]["GeoObjectCollection"]
+            cat = [float(element) for element in
+                   root["metaDataProperty"]["GeocoderResponseMetaData"]["Point"]["pos"].split()]
+            cat_big.append(cat)
+
+            cat = \
+                root["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["AddressDetails"][
+                    "Country"][
+                    "AddressLine"]
+            cat_big.append(cat)
+
+            like_adress = \
+            json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"][
+                "GeocoderMetaData"]["Address"]
+
+            if "postal_code" in like_adress:
+                cat_big.append(like_adress["postal_code"])
+            else:
+                cat_big.append('НЕТУ СВОЕГО ПОЧТОВОГО ИНДЕКСА')
+            return cat_big
+        except IndexError:
+            return "IndexError"
+    except AssertionError:
+        pass

@@ -4,5 +4,6 @@ class Globals:
     map_request = "http://static-maps.yandex.ru/1.x/"
     params = {'l': 'map'}
     search_text = ''
+    post = ''
     map_file = ''
     adress = ''
