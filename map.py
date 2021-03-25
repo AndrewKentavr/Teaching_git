@@ -75,8 +75,8 @@ def photo_response(text):
             cat_big.append(cat)
 
             like_adress = \
-            json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"][
-                "GeocoderMetaData"]["Address"]
+                json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"][
+                    "GeocoderMetaData"]["Address"]
 
             if "postal_code" in like_adress:
                 cat_big.append(like_adress["postal_code"])
@@ -87,3 +87,24 @@ def photo_response(text):
             return "IndexError"
     except AssertionError:
         pass
+
+
+def organization_response(text):
+    string = text.split()
+    lon = str(string[0])
+    lat = str(string[1])
+
+    # 37.5840385,
+    # 55.73152593
+    req = "https://search-maps.yandex.ru/v1/"
+
+    search_params = {
+        "apikey": "dda3ddba-c9ea-4ead-9010-f43fbc15c6e3",
+        "text": "Санкт-Петербург, ул. Блохина, 15",
+        "lang": "ru_RU",
+        "type": "biz",
+    }
+
+    response = requests.get(req, params=search_params)
+    json_response = response.json()
+    print(json_response)
