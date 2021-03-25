@@ -68,10 +68,13 @@ class Example(QWidget):
         self.pixmap = QPixmap(Globals.map_file)
         self.image.setPixmap(self.pixmap)
 
-    def search_2(self, text):
+    def search_2(self, count, text):
         if text == '':
             return
-        check_geocoder = photo_response(text)
+        if count == 0:
+            check_geocoder = photo_response(text)
+        else:
+            check_geocoder = organizations_response(text)
         if check_geocoder == "IndexError":
             return
         Globals.longitude, Globals.latitude = check_geocoder[0]
@@ -104,34 +107,44 @@ class Example(QWidget):
         os.remove(Globals.map_file)
 
     def mousePressEvent(self, event):
-        if (event.button() == Qt.LeftButton):
+        if event.button() == Qt.LeftButton:
             x = event.x()
             y = event.y()
-            if y > 180:
-                ll = str(Globals.longitude).split('.')
-                la = str(Globals.latitude).split('.')
-                const_x = 5.5
-                const_y = 2.65
+            ll = self.cords(x, y)
+            self.search_2(0, ll)
 
-                if x < 300:
-                    n = (300 - int(x)) * const_x
-                    long = int(int(ll[1]) - n)
-                else:
-                    n = (int(x) - 300) * const_x
-                    long = int(int(ll[1]) + n)
+        elif event.button() == Qt.RightButton:
+            x = event.x()
+            y = event.y()
+            ll = self.cords(x, y)
+            self.search_2(1, ll)
 
-                if y < 400:
-                    n = (int(y) - 400) * const_y
-                    lat = int(int(la[1]) - n)
-                else:
-                    n = (400 - int(y)) * const_y
-                    lat = int(int(la[1]) + n)
+    def cords(self, x, y):
+        if y > 180:
+            ll = str(Globals.longitude).split('.')
+            la = str(Globals.latitude).split('.')
+            const_x = 5.5
+            const_y = 2.65
 
-                longitude = ll[0] + '.' + str(long)
-                latitude = la[0] + '.' + str(lat)
+            if x < 300:
+                n = (300 - int(x)) * const_x
+                long = int(int(ll[1]) - n)
+            else:
+                n = (int(x) - 300) * const_x
+                long = int(int(ll[1]) + n)
 
-                cat = longitude + ' ' + latitude
-                self.search_2(cat)
+            if y < 400:
+                n = (int(y) - 400) * const_y
+                lat = int(int(la[1]) - n)
+            else:
+                n = (400 - int(y)) * const_y
+                lat = int(int(la[1]) + n)
+
+            longitude = ll[0] + '.' + str(long)
+            latitude = la[0] + '.' + str(lat)
+
+            cat = longitude + ' ' + latitude
+            return cat
 
 
 if __name__ == '__main__':
