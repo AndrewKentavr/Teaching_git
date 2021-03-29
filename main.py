@@ -74,10 +74,12 @@ class Example(QWidget):
         if num == 0:
             check_geocoder = photo_response(text)
         elif num == 1:
-            check_geocoder = organization_response(text)
+            string = organization_response(text)
+            check_geocoder = geocoder_response(string)
 
         if check_geocoder == "IndexError":
             return
+
         Globals.longitude, Globals.latitude = check_geocoder[0]
         Globals.params['pt'] = f'{Globals.longitude},{Globals.latitude},pm2orl'
         Globals.adress = check_geocoder[1]

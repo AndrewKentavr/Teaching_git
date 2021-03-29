@@ -94,37 +94,24 @@ def organization_response(text):
     lon = str(string[0])
     lat = str(string[1])
 
-    req = 'https://geocode-maps.yandex.ru/1.x/'
-    photo_response = {'apikey': '40d1649f-0493-4b70-98ba-98533de7710b',
-                      "geocode": ",".join([lon, lat]),
-                      'format': 'json'}
-    response = requests.get(req, params=photo_response)
-    try:
-        assert response
-        json_response = response.json()
-        try:
-            root = json_response["response"]["GeoObjectCollection"]
-            adress = \
-                root["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["AddressDetails"][
-                    "Country"][
-                    "AddressLine"]
-            print(adress)
-        except IndexError:
-            return "IndexError"
-    except AssertionError:
-        pass
-
     # 55.73152593, 37.5840385
     # 55.73200000, 37.5840385
+    address_ll = ",".join([lon, lat])
     req = "https://search-maps.yandex.ru/v1/"
     search_params = {
         "apikey": "dda3ddba-c9ea-4ead-9010-f43fbc15c6e3",
-        "text": adress,
+        "text": 'организации',
         "lang": "ru_RU",
-        "type": "biz",
-        "spn": "0.0001,0.0001"
+        "ll": address_ll,
+        "type": "biz"
     }
 
     response = requests.get(req, params=search_params)
     json_response = response.json()
-    print(json_response)
+    organization = json_response["features"][0]
+    org_name = organization["properties"]["CompanyMetaData"]["name"]
+    org_address = organization["properties"]["CompanyMetaData"]["address"]
+    print(organization)
+    print(org_name)
+    print(org_address)
+    return org_address
